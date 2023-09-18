@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Note {
+  id String @id @default(cuid())
+  content String
+  dateCreated DateTime
+}
+model InventoryItem {
+	id String @id @default(cuid())
+	name String @unique
+	description String?
+	itemValue ItemValue[]
+	inventoryItemOwnership InventoryItemOwnership[]
+}
+model InventoryItemOwnership {
+	id String @id @default(cuid())
+	inventoryItem InventoryItem @relation(fields: [itemId], references: [id])
+	itemId String
+	count Int @default(1)
+	dateObtained DateTime
+	lootedBy String?
+	ownedBy String
+}
+model ItemValue {
+	id String @id @default(cuid())
+	inventoryItem InventoryItem @relation(fields: [itemId], references: [id])
+	itemId String
+	currencyId String
+	currency Currency @relation(fields: [currencyId], references: [id])
+	amount Int
+	@@unique([itemId, currencyId], name: "unique_currency_value_per_item")
+}
+model Transaction {
+	id String @id @default(cuid())
+	transactionValue TransactionValue[]
+	transactionDate DateTime @default(now())
+	lootedBy String?
+	label String
+}
+model TransactionValue {
+	id String @id @default(cuid())
+	transactionId String
+	transaction Transaction @relation(fields: [transactionId], references: [id])
+	currencyId String
+	currency Currency @relation(fields: [currencyId], references: [id])
+	amount Int
+}
+model Currency {
+	id String @id @default(cuid())
+	currencyName String @unique
+	transactionValues TransactionValue[]
+	currencyValue Int
+	itemValues ItemValue[]
+}

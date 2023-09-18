@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  nextapp-dev:
+    image: nextapp-dev
+    volumes:
+      - "./next-app/prisma/dev.sqlite:/app/data/dev.sqlite"
+    build:
+      context: next-app
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: "file:/app/data/dev.sqlite"
+      HOSTNAME: "0.0.0.0"
+    ports:
+      - 3000:3000
+      - 9229:9229
+    command: ["node", "--inspect=0.0.0.0:9229", "index.js"]

@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  db-migrate:
+    image: db-migrate
+    restart: "no"
+    volumes:
+      - "$DATABASE_LOCATION:/app/data/prod.sqlite"
+    build:
+      context: next-app
+      dockerfile: ./migrations.Dockerfile
+    environment:
+      DATABASE_URL: "file:/app/data/prod.sqlite"
+
+  nextapp:
+    depends_on:
+      db-migrate:
+        condition: service_completed_successfully
+    image: nextapp
+    volumes:
+      - "$DATABASE_LOCATION:/app/data/prod.sqlite"
+    build:
+      context: next-app
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "file:/app/data/prod.sqlite"
+      HOSTNAME: "0.0.0.0"
+    ports:
+      - 4000:3000
