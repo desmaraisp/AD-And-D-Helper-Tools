@@ -34,6 +34,20 @@ export const inventoryItemPutRouteConfig: RouteConfig = {
 		}
 	},
 }
+export const inventoryItemDeleteRouteConfig: RouteConfig = {
+	method: 'delete',
+	path: '/api/inventory-item/{item-id}',
+	request: {
+		params: z.object({
+			"item-id": z.string().min(1),
+		})
+	},
+	responses: {
+		200: {
+			description: 'Success.'
+		}
+	},
+}
 
 router
 	.put(
@@ -82,6 +96,32 @@ router
 				})
 			};
 			res.status(200).json(response)
+		},
+	)
+	.delete(
+		async (req, res, _next) => {
+			const itemId = req.query["item-id"]
+			const singleItemId = Array.isArray(itemId) ? itemId[0] : itemId;
+
+			await prismaClient.$transaction(async (tr) => {
+				await tr.inventoryItemOwnership.deleteMany({
+					where: {
+						itemId: singleItemId
+					}
+				})
+				await tr.itemValue.deleteMany({
+					where: {
+						itemId: singleItemId
+					}
+				})
+				await tr.inventoryItem.delete({
+					where: {
+						id: singleItemId
+					}
+				});
+			})
+
+			res.status(200).end()
 		},
 	)
 export default router.handler({

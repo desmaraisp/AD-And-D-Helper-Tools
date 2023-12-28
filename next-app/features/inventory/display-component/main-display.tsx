@@ -2,16 +2,19 @@ import { ReactNode, useContext, useState } from "react";
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoins, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Button, Card, Popover, Select, Stack, Table, TableTd, TableTh, TableTr, TextInput, Text } from "@mantine/core";
+import { Button, Card, Popover, Select, Stack, Table, TableTd, TableTh, TableTr, Text } from "@mantine/core";
 import { ItemOwnershipAddForm } from "@/features/item-ownership/add-component/form";
-import { InventoryItemModel, InventoryItemModelWithId } from "../inventory-schema";
-import { list, range, sum, unique } from "radash";
-import { EditButton } from "@/components/edit-button";
+import { InventoryItemModelWithId } from "../inventory-schema";
+import { list, sum, unique } from "radash";
 import { InventoryItemEditForm } from "../edit-component/form";
 import { OwnershipContext } from "@/features/item-ownership/context-component/ownership-context";
 import { InventoryContext } from "../context-component/inventory-context";
 import { OwnershipModelWithId } from "@/features/item-ownership/ownership-schema";
 import { CurrencyContext } from "@/features/currencies/context-component/currency-context";
+import { DeleteButton } from "@/components/delete-button";
+import { DeleteInventoryItem } from "../delete-component/fetcher";
+import { ErrorBoundary } from "react-error-boundary";
+import { WrappedWithErrorHandler } from "@/components/errors";
 
 export function InventoryDisplay() {
 	const { ownerships } = useContext(OwnershipContext)
@@ -101,7 +104,7 @@ function InventoryDisplayTableItem({ item, ownerships }: { item: InventoryItemMo
 		<TableTr style={{ borderTop: '2px solid' }}>
 			<TableTd rowSpan={numberOfRows}>{item.itemName}</TableTd>
 			<TableTd rowSpan={numberOfRows}>
-				<Text style={{whiteSpace: "pre-line"}}>{item.description || "No description was provided"}</Text>
+				<Text style={{ whiteSpace: "pre-line" }}>{item.description || "No description was provided"}</Text>
 			</TableTd>
 			<TableTd rowSpan={numberOfRows}>
 				{sum(ownerships, (x) => x.count)}
@@ -119,6 +122,9 @@ function InventoryDisplayTableItem({ item, ownerships }: { item: InventoryItemMo
 			<TableTd rowSpan={numberOfRows}>
 				<EditPopover item={item} />
 				<AddPopover item={item} />
+				<WrappedWithErrorHandler>
+					<DeleteButton deleteCallback={async () => await DeleteInventoryItem(item.itemId)} />
+				</WrappedWithErrorHandler>
 			</TableTd>
 		</TableTr>
 		{additionalRows}
