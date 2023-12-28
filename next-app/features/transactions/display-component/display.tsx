@@ -101,9 +101,9 @@ function TransactionsDisplay({ data }: { data: TransactionModelWithId[] }) {
 									{x.lootedBy}
 								</TableTd>
 								<TableTd>
-									{getCurrency(x.value[0].currencyId)?.currencyName}
+									{getCurrency(x.value[0]?.currencyId)?.currencyName}
 								</TableTd>
-								<TableTd>{x.value[0].amount}</TableTd>
+								<TableTd>{x.value[0]?.amount}</TableTd>
 							</TableTr>
 							{x.value.slice(1).map(y => {
 								return <TableTr key={y.transactionValueId}>
