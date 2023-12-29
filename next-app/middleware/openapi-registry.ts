@@ -1,7 +1,7 @@
 import { commentRouteConfig } from '@/pages/api/comment';
 import { commentDeleteRouteConfig, commentPutRouteConfig } from '@/pages/api/comment/[comment-id]';
 import { inventoryItemRouteConfig } from '@/pages/api/inventory-item';
-import { inventoryItemPutRouteConfig } from '@/pages/api/inventory-item/[item-id]';
+import { inventoryItemDeleteRouteConfig, inventoryItemPutRouteConfig } from '@/pages/api/inventory-item/[item-id]';
 import { transactionsRouteConfig } from '@/pages/api/transaction';
 import { currencyRouteConfig } from '@/pages/api/currency';
 import { OpenAPIRegistry, OpenApiGeneratorV3, extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
@@ -22,6 +22,7 @@ export function createOpenApiRegistry() {
 	registry.registerPath(inventoryItemPutRouteConfig)
 	registry.registerPath(currencyEditRouteConfig)
 	registry.registerPath(inventoryItemOwnershipRouteConfig)
+	registry.registerPath(inventoryItemDeleteRouteConfig)
 
 	const generator = new OpenApiGeneratorV3(registry.definitions);
 	return generator.generateDocument({

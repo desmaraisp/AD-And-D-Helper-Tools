@@ -7,6 +7,7 @@ import { TransactionModelWithId, TransactionSchemaWithId } from "@/features/tran
 import { z } from "zod";
 import { Stack, Title } from "@mantine/core";
 import { UserFundsDisplay } from "@/features/transactions/display-component/display";
+import { TransactionValueModelWithId } from "@/features/transaction-value/transaction-value-schema";
 
 export const getServerSideProps = async (_context: GetServerSidePropsContext) => {
 	const result = await prismaClient.transaction.findMany({
@@ -22,28 +23,24 @@ export const getServerSideProps = async (_context: GetServerSidePropsContext) =>
 	const currencies = await prismaClient.currency.findMany();
 	return {
 		props: {
-			transactions: JSON.stringify(result.map(x => {
-				return {
+			transactions: JSON.stringify(result.map<TransactionModelWithId>(x => ({
 					transactionId: x.id,
 					label: x.label,
 					lootedBy: x.lootedBy,
 					transactionDate: x.transactionDate,
-					value: x.transactionValue.map(o => {
+					value: x.transactionValue.map<TransactionValueModelWithId>(o => {
 						return {
 							amount: o.amount,
 							currencyId: o.currencyId,
 							transactionValueId: o.id
 						}
 					})
-				} as TransactionModelWithId
+				}))),
+			currencies: currencies.map<CurrencyModelWithId>(x => ({
+				currencyId: x.id,
+				currencyName: x.currencyName,
+				value: x.currencyValue
 			})),
-			currencies: currencies.map(x => {
-				return {
-					currencyId: x.id,
-					currencyName: x.currencyName,
-					value: x.currencyValue
-				} as CurrencyModelWithId
-			}),
 		}
 	}
 }

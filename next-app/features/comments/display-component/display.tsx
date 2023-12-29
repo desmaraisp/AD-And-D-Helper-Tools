@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { EditButton } from "@/components/edit-button";
 import { DeleteButton } from "@/components/delete-button";
-import { Card, Group, Text } from "@mantine/core";
+import { Button, Card, Group, Text } from "@mantine/core";
 import { DeleteComment } from "../delete-component/fetcher";
 import { WrappedWithErrorHandler } from "@/components/errors";
 import { CommentEdit } from "../edit-component/form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
 export function CommentDisplay({ commentID, content, dateCreated }: {
 	commentID: string;
@@ -33,11 +34,13 @@ export function CommentDisplay({ commentID, content, dateCreated }: {
 				<Group justify="space-between">
 					<Text>{dateCreated}</Text>
 					<Group>
-						<EditButton onClick={() => setIsFormEnabled(true)} />
+						<Button variant="subtle" onClick={() => setIsFormEnabled(true)}>
+							<FontAwesomeIcon icon={faEdit} />
+						</Button>
 						<DeleteButton deleteCallback={async () => await DeleteComment(commentID)} />
 					</Group>
 				</Group>
-				<Text  style={{whiteSpace: 'pre-line', wordBreak: 'break-word'}}>
+				<Text style={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}>
 					{content}
 				</Text>
 			</Card>

@@ -1,4 +1,4 @@
-import { group, sum, unique } from "radash";
+import { group, max, sum, unique } from "radash";
 import React, { useContext, useState } from "react";
 import { TransactionModelWithId } from "../transaction-schema";
 import { Button, Card, Popover, Select, Stack, Table, TableTd, TableTh, TableTr, Title } from "@mantine/core";
@@ -89,21 +89,25 @@ function TransactionsDisplay({ data }: { data: TransactionModelWithId[] }) {
 			<Table.Tbody>
 				{
 					data.map((x) => {
+						const rowsToUse = max([x.value.length, 1])
+
 						return <React.Fragment key={x.transactionId}>
 							<TableTr>
-								<TableTd rowSpan={x.value.length}>
+								<TableTd rowSpan={rowsToUse}>
 									{x.label}
 								</TableTd>
-								<TableTd rowSpan={x.value.length}>
+								<TableTd rowSpan={rowsToUse}>
 									{x.transactionDate.toISOString().substring(0, 10)}
 								</TableTd>
-								<TableTd rowSpan={x.value.length}>
+								<TableTd rowSpan={rowsToUse}>
 									{x.lootedBy}
 								</TableTd>
 								<TableTd>
-									{getCurrency(x.value[0].currencyId)?.currencyName}
+									{getCurrency(x.value[0]?.currencyId)?.currencyName}
 								</TableTd>
-								<TableTd>{x.value[0].amount}</TableTd>
+								<TableTd>
+									{x.value[0]?.amount}
+								</TableTd>
 							</TableTr>
 							{x.value.slice(1).map(y => {
 								return <TableTr key={y.transactionValueId}>
