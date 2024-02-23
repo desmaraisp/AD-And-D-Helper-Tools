@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import { PostNewTransaction } from "./fetcher";
 import { Button, Card, Group, NumberInput, Select, Stack, TextInput } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
+import { group, sum } from "radash";
+import { TransactionValueModel } from "@/features/transaction-value/transaction-value-schema";
 
 export function UserFundsAddForm() {
 	const { currencies } = useContext(CurrencyContext)
@@ -26,6 +28,12 @@ export function UserFundsAddForm() {
 	})
 
 	const handler = async (data: TransactionModel) => {
+		let valuesGroupedByCurrency = group(data.value, f => f.currencyId)
+		data.value = Object.keys(valuesGroupedByCurrency).map<TransactionValueModel>(x => ({
+			amount: sum(valuesGroupedByCurrency[x] ?? [], f=>f.amount),
+			currencyId: x
+		}))
+
 		const result = await PostNewTransaction(data)
 
 		if (isApiError(result)) {
