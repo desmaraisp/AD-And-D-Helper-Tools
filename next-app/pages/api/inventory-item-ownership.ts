@@ -42,10 +42,8 @@ router
 				const createdItem = await tr.inventoryItemOwnership.create({
 					data: {
 						dateObtained: new Date(payload.dateObtained),
-						ownedBy: payload.ownedBy,
 						count: payload.count,
 						itemId: payload.itemId,
-						lootedBy: payload.lootedBy,
 					},
 					include: {
 						inventoryItem: { select: { name: true } }
@@ -53,7 +51,6 @@ router
 				});
 				const createdTransaction = await CreateTransactionInDB({
 					label: `Exchanged ${payload.count} of item ${createdItem.inventoryItem.name}`,
-					lootedBy: '',
 					transactionDate: createdItem.dateObtained,
 					value: payload.attachedTransaction
 				}, tr);
@@ -61,8 +58,6 @@ router
 					itemId: createdItem.itemId,
 					count: createdItem.count,
 					dateObtained: createdItem.dateObtained,
-					lootedBy: createdItem.lootedBy,
-					ownedBy: createdItem.ownedBy,
 					ownershipId: createdItem.id,
 					attachedTransaction: createdTransaction.value
 				};

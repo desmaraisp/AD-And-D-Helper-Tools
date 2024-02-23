@@ -39,8 +39,6 @@ export const getServerSideProps = async (_context: GetServerSidePropsContext) =>
 				itemId: x.itemId,
 				count: x.count,
 				dateObtained: x.dateObtained,
-				lootedBy: x.lootedBy,
-				ownedBy: x.ownedBy,
 				ownershipId: x.id
 			} as OwnershipModelWithId))),
 			currencies: currencies.map(x => ({

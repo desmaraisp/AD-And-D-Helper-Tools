@@ -23,7 +23,6 @@ export function UserFundsAddForm() {
 				currencyId: currencies.find(x => x)?.currencyId ?? ''
 			}],
 			label: '',
-			lootedBy: ''
 		}
 	})
 
@@ -72,11 +71,6 @@ export function UserFundsAddForm() {
 					<TextInput
 						label="Transaction label"
 						{...form.getInputProps("label")}
-					/>
-
-					<TextInput
-						label="Looted by?"
-						{...form.getInputProps("lootedBy")}
 					/>
 
 					<DateInput

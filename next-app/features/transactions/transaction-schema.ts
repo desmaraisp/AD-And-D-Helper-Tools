@@ -4,7 +4,6 @@ import { TransactionValueSchema, TransactionValueSchemaWithId } from '../transac
 export const TransactionSchema = z.object({
 	transactionDate: z.coerce.date(),
 	label: z.string().min(1),
-	lootedBy: z.string().nullable(),
 	value: z.array(TransactionValueSchema)
 })
 export interface TransactionModel extends z.infer<typeof TransactionSchema> { }

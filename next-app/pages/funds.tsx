@@ -26,7 +26,6 @@ export const getServerSideProps = async (_context: GetServerSidePropsContext) =>
 			transactions: JSON.stringify(result.map<TransactionModelWithId>(x => ({
 					transactionId: x.id,
 					label: x.label,
-					lootedBy: x.lootedBy,
 					transactionDate: x.transactionDate,
 					value: x.transactionValue.map<TransactionValueModelWithId>(o => {
 						return {

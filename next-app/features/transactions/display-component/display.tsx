@@ -3,26 +3,19 @@ import React, { useContext, useState } from "react";
 import { TransactionModelWithId } from "../transaction-schema";
 import { Button, Card, Popover, Select, Stack, Table, TableTd, TableTh, TableTr, Title } from "@mantine/core";
 import { CurrencyContext } from "@/features/currencies/context-component/currency-context";
-import { CurrencyModelWithId } from "@/features/currencies/currency-schema";
-import { CurrencyEditForm } from "@/features/currencies/edit-component/form";
-import { faCoins, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CurrencyConvertForm } from "../convert-component/form";
 
 export function UserFundsDisplay({ data }: { data: TransactionModelWithId[] }) {
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
-	const [selectedLooter, setSelectedLooter] = useState<string | null>(null)
 
 	const existingTransactionDates = unique(data.flatMap(({ transactionDate }) => transactionDate.toDateString()))
-	const existingLooters = unique(data.flatMap(({ lootedBy }) => lootedBy)).filter(x => !!x)
-
-	const selectedTransactionsDate = selectedDate == null ? data : data.filter(c => c.transactionDate.toDateString() == selectedDate);
-	const selectedTransactions = selectedLooter == null ? selectedTransactionsDate : selectedTransactionsDate.filter(c => c.lootedBy == selectedLooter);
+	const selectedTransactions = selectedDate == null ? data : data.filter(c => c.transactionDate.toDateString() == selectedDate);
 
 	return <Stack>
 		<Title order={2}>Total currencies</Title>
 		<Select label="date" clearable data={existingTransactionDates} value={selectedDate} onChange={setSelectedDate} />
-		<Select label="looter" clearable data={existingLooters as string[]} value={selectedLooter} onChange={setSelectedLooter} />
 		<FundsTotalsDisplay data={selectedTransactions} />
 		<Title order={2}>Transactions list</Title>
 		<TransactionsDisplay data={selectedTransactions} />
@@ -78,7 +71,6 @@ function TransactionsDisplay({ data }: { data: TransactionModelWithId[] }) {
 				<TableTr>
 					<TableTh rowSpan={2}>Transaction Label</TableTh>
 					<TableTh rowSpan={2}>Transaction Date</TableTh>
-					<TableTh rowSpan={2}>Looted By</TableTh>
 					<TableTh colSpan={2}>Transaction Value</TableTh>
 				</TableTr>
 				<TableTr>
@@ -99,9 +91,7 @@ function TransactionsDisplay({ data }: { data: TransactionModelWithId[] }) {
 								<TableTd rowSpan={rowsToUse}>
 									{x.transactionDate.toISOString().substring(0, 10)}
 								</TableTd>
-								<TableTd rowSpan={rowsToUse}>
-									{x.lootedBy}
-								</TableTd>
+
 								<TableTd>
 									{getCurrency(x.value[0]?.currencyId)?.currencyName}
 								</TableTd>

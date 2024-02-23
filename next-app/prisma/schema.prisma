@@ -28,8 +28,6 @@ model InventoryItemOwnership {
 	itemId String
 	count Int @default(1)
 	dateObtained DateTime
-	lootedBy String?
-	ownedBy String
 }
 model ItemValue {
 	id String @id @default(cuid())
@@ -44,7 +42,6 @@ model Transaction {
 	id String @id @default(cuid())
 	transactionValue TransactionValue[]
 	transactionDate DateTime @default(now())
-	lootedBy String?
 	label String
 }
 model TransactionValue {

@@ -20,8 +20,6 @@ export function ItemOwnershipAddForm({ item }: { item: InventoryItemModelWithId 
 		validate: zodResolver(OwnershipSchema),
 		initialValues: {
 			itemId: item.itemId,
-			lootedBy: '',
-			ownedBy: '',
 			attachedTransaction: item.itemValue.map(x => ({ amount: -x.amount, currencyId: x.currencyId })),
 			count: 1,
 			dateObtained: new Date()
@@ -79,8 +77,6 @@ export function ItemOwnershipAddForm({ item }: { item: InventoryItemModelWithId 
 	return <form onSubmit={form.onSubmit(handler)}>
 		<Stack>
 			<NumberInput label='Count of item' {...form.getInputProps('count')} onChange={onItemCountChange} />
-			<TextInput label='Looted by' {...form.getInputProps("lootedBy")} />
-			<TextInput label='Owned by' {...form.getInputProps("ownedBy")} />
 			<DateInput
 				label="Acquisition date"
 				placeholder="Date input"

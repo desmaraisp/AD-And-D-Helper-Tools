@@ -28,7 +28,6 @@ export function CurrencyConvertForm({ CurrencyToConvert, cancelFormCallback }: {
 	const handler = async (data: CurrencyConvertModel) => {
 		const result = await PostNewTransaction({
 			label: `Convert ${getCurrency(CurrencyToConvert)?.currencyName} To ${getCurrency(data.currencyToConvertTo.currencyId)?.currencyName}`,
-			lootedBy: '',
 			transactionDate: data.transactionDate,
 			value: [
 				{

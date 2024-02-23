@@ -17,7 +17,6 @@ export async function CreateTransactionInDB(transactionObject: TransactionModel,
 		data: {
 			label: transactionObject.label,
 			transactionDate: new Date(transactionObject.transactionDate),
-			lootedBy: transactionObject.lootedBy,
 			transactionValue: {
 				create: transactionValues
 			}
@@ -57,7 +56,6 @@ export async function CreateTransactionInDB(transactionObject: TransactionModel,
 
 	const response: TransactionModelWithId = {
 		transactionId: createdTransaction.id,
-		lootedBy: createdTransaction.lootedBy,
 		label: createdTransaction.label,
 		transactionDate: createdTransaction.transactionDate,
 		value: createdTransaction.transactionValue.map(x => {

@@ -21,26 +21,21 @@ export function InventoryDisplay() {
 	const { getItem, inventory } = useContext(InventoryContext)
 
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
-	const [selectedLooter, setSelectedLooter] = useState<string | null>(null)
-
 	const existingDateObtained = unique(ownerships.flatMap(({ dateObtained }) => dateObtained.toDateString()))
-	const existingLooters = unique(ownerships.flatMap(({ lootedBy }) => lootedBy)).filter(x => !!x)
 
 	const selectedOwnershipsByDate = selectedDate == null ? ownerships : ownerships.filter(c => c.dateObtained.toDateString() == selectedDate);
-	const selectedOwnershipsByLooter = selectedLooter == null ? selectedOwnershipsByDate : selectedOwnershipsByDate.filter(c => c.lootedBy == selectedLooter);
 
 	let selectedInventory: InventoryItemModelWithId[]
-	if (!selectedDate && !selectedLooter) {
+	if (!selectedDate) {
 		selectedInventory = inventory
 	}
 	else {
-		selectedInventory = unique(selectedOwnershipsByLooter, (x) => x.itemId).map(x => getItem(x.itemId))
+		selectedInventory = unique(selectedOwnershipsByDate, (x) => x.itemId).map(x => getItem(x.itemId))
 	}
 
 	return <Stack>
 		<Select label="date" clearable data={existingDateObtained} value={selectedDate} onChange={setSelectedDate} />
-		<Select label="looter" clearable data={existingLooters as string[]} value={selectedLooter} onChange={setSelectedLooter} />
-		<InventoryItemMainDisplay inventory={selectedInventory} ownerships={selectedOwnershipsByLooter} />
+		<InventoryItemMainDisplay inventory={selectedInventory} ownerships={selectedOwnershipsByDate} />
 	</Stack>
 }
 
@@ -66,8 +61,6 @@ export function InventoryItemMainDisplay({ inventory, ownerships }: { inventory:
 						<TableTh>Amount</TableTh>
 						<TableTh>Count</TableTh>
 						<TableTh>Date Obtained</TableTh>
-						<TableTh>Owned by</TableTh>
-						<TableTh>Looted by</TableTh>
 					</TableTr>
 				</Table.Thead>
 				<Table.Tbody>
@@ -95,8 +88,6 @@ function InventoryDisplayTableItem({ item, ownerships }: { item: InventoryItemMo
 			</TableTd>
 			<TableTd>{ownerships[index]?.count}</TableTd>
 			<TableTd>{ownerships[index]?.dateObtained?.toISOString()?.substring(0, 10)}</TableTd>
-			<TableTd>{ownerships[index]?.ownedBy}</TableTd>
-			<TableTd>{ownerships[index]?.lootedBy}</TableTd>
 		</TableTr>)
 	}
 
@@ -117,8 +108,6 @@ function InventoryDisplayTableItem({ item, ownerships }: { item: InventoryItemMo
 			</TableTd>
 			<TableTd>{ownerships[0]?.count}</TableTd>
 			<TableTd>{ownerships[0]?.dateObtained.toISOString().substring(0, 10)}</TableTd>
-			<TableTd>{ownerships[0]?.ownedBy}</TableTd>
-			<TableTd>{ownerships[0]?.lootedBy}</TableTd>
 			<TableTd rowSpan={numberOfRows}>
 				<EditPopover item={item} />
 				<AddPopover item={item} />
